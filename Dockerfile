@@ -9,8 +9,6 @@ RUN chmod +x /usr/local/bin/poweriso
 RUN mkdir /pentoo_tmp
 RUN cd  /pentoo_tmp
 RUN wget -bqc http://www.pentoo.ch/isos/latest-iso-symlinks/pentoo-amd64-default.iso
-ADD http://www.pentoo.ch/isos/latest-iso-symlinks/pentoo-amd64-default.iso
-RUN sleep 520
 RUN echo pentoo-amd64-default.iso unpacking"
 RUN emerge -v sys-fs/squashfs-tools app-arch/p7zip
 RUN poweriso extract  ~ *.iso / -od ~/pentoo_tmp/ ; exit 0 
