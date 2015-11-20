@@ -1,4 +1,4 @@
-FROM gentoo/stage3-amd64-hardened
+FROM gentoo/stage3-amd64
 
 MAINTAINER necrose99 necrose99@protmail.ch mike@michaellawrenceit.com
 
