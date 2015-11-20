@@ -19,7 +19,7 @@ RUN 7z x *.iso
 RUN echo "unpacking Squashfile and modules"
 RUN unsquashfs -f -d / /pentoo_tmp/image.squashfs
 RUN unsquashfs -f -d / /pentoo_tmp/*.lzm 
-RUN  rm -rf /pentoo_tmp/  #Cleanup ISLE 5 
-RUN eslect profile set pentoo:pentoo/hardened/linux/amd64/bleeding_edge
-RUN pentoo-updater
-RUN echo "Bootstrapped  Pentoo iso into /:"
+RUN  rm -rf /pentoo_tmp/  #Cleanup ISLE 5
+RUN pentoo-updater  #A. Test to make sure files copied over ,b. update Binaries.
+RUN eslect profile set pentoo:pentoo/hardened/linux/amd64/bleeding_edge   #Prep for building newest 
+RUN echo "Bootstrapped  Pentoo iso into /: ,ready for builds"
