@@ -1,30 +1,26 @@
-FROM busybox
+FROM gentoo/stage3-amd64-hardened
 
 MAINTAINER necrose99 necrose99@protmail.ch mike@michaellawrenceit.com
 
 #ADD http://www.busybox.net/downloads/binaries/latest/busybox-i686 /busybox
 
 # This one should be present by running the build.sh script
-ADD build.sh /
-
-RUN apt-get update && apt-get install -y \
-	wget bzip2 squashfs-tools p7zip-full
-
-RUN /build.sh
-
-# Setup the (virtually) current runlevel
-RUN echo "default" > /run/openrc/softlevel
-
-# Setup the rc_sys
-RUN sed -e 's/#rc_sys=""/rc_sys="lxc"/g' -i /etc/rc.conf
-
-# Setup the net.lo runlevel
-RUN ln -s /etc/init.d/net.lo /run/openrc/started/net.lo
-
-# Setup the net.eth0 runlevel
-RUN ln -s /etc/init.d/net.lo /etc/init.d/net.eth0
-RUN ln -s /etc/init.d/net.eth0 /run/openrc/started/net.eth0
-
-# By default, UTC system
-RUN echo 'UTC' > /etc/timezone
-# By default, portage
+RUN echo "Getting power ISO to Unpack Pentoo into the Gentoo root & Overlay"
+RUN wget -O poweriso-1.3.tar.gz http://goo.gl/p8Tzc
+RUN tar -xzvf poweriso-1.3.tar.gz -C /usr/local/bin
+RUN chmod +x /usr/local/bin/poweriso
+RUN mkdir /pentoo_tmp
+RUN cd  /pentoo_tmp
+RUN wget -O http://www.pentoo.ch/isos/latest-iso-symlinks/pentoo-amd64-default.iso
+RUN echo"http://www.pentoo.ch/isos/latest-iso-symlinks/pentoo-amd64-default.iso unpacking"
+RUN ./poweriso extract pentoo-amd64-default.iso / -od /pentoo_tmp
+RUN mv image.squashfs /
+RUN mv /pentoo_tmp/modules/*.lzm /
+RUN emerge -v sys-fs/squashfs-tools
+RUN echo "unpacking Squashfile and modules"
+RUN unsquashfs -f -d / /image.squashfs
+RUN unsquashfs -f -d / /*.lzm 
+RUN rm *.lzm && rm *.squashfs && rm -rf /pentoo_tmp/
+RUN eslect profile set pentoo:pentoo/hardened/linux/amd64/bleeding_edge
+RUN pentoo-updater
+RUN echo "Bootstrapped  Pentoo iso into /:"
